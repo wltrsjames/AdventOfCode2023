@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class Day4 {
+    private static Map<Integer, List<Integer[][]>> memoisation = new HashMap<>();
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
         String fileInput = FileUtils.readFile("src/resources/Day4-Input.txt");
@@ -27,19 +28,14 @@ public class Day4 {
 
         //part 2
         List<Integer[][]> collectedCards = new ArrayList<>();
-        Map<Integer, List<Integer[][]>> memoization = new HashMap<>();
 
         for (int i = 0; i < allCardNumbers.size(); i++) {
             Integer[][] card = allCardNumbers.get(i);
             collectedCards.add(card);
 
-            if (memoization.containsKey(i)) {
-                collectedCards.addAll(memoization.get(i));
-            } else {
-                long winningNumberCount = getWinningNumberCount(allCardNumbers.get(i));
-                List<Integer[][]> copiesWonForCard = getCopiesFromCard(allCardNumbers, i + 1, (int) (i + 1 + winningNumberCount), memoization);
-                collectedCards.addAll(copiesWonForCard);
-            }
+            long winningNumberCount = getWinningNumberCount(allCardNumbers.get(i));
+            List<Integer[][]> copiesWonForCard = getCopiesFromCard(allCardNumbers, i + 1, (int) (i + 1 + winningNumberCount));
+            collectedCards.addAll(copiesWonForCard);
         }
 
         System.out.println(collectedCards.size());
@@ -48,16 +44,23 @@ public class Day4 {
         System.out.println("Total execution time: " + (endTime - startTime) + "ms");
     }
 
-    private static List<Integer[][]> getCopiesFromCard(List<Integer[][]> cards, Integer startingIndex, Integer endingIndex, Map<Integer, List<Integer[][]>> memoisation) {
+    private static List<Integer[][]> getCopiesFromCard(List<Integer[][]> cards, Integer startingIndex, Integer endingIndex) {
         List<Integer[][]> collectedCards = new ArrayList<>();
-        for (int i = startingIndex; i < endingIndex; i++) {
-            collectedCards.add(cards.get(i));
-            long winningNumberCount = getWinningNumberCount(cards.get(i));
-
-            List<Integer[][]> copyCards = getCopiesFromCard(cards, i + 1, (int) (i + 1 + winningNumberCount), memoisation);
-            collectedCards.addAll(copyCards);
-            memoisation.put(i, copyCards);
+        if(memoisation.containsKey(startingIndex-1)) {
+            collectedCards.addAll(memoisation.get(startingIndex-1));
+            return collectedCards;
         }
+
+        for (int i = startingIndex; i < endingIndex; i++) {
+                collectedCards.add(cards.get(i));
+                long winningNumberCount = getWinningNumberCount(cards.get(i));
+
+                List<Integer[][]> copyCards = getCopiesFromCard(cards, i + 1, (int) (i + 1 + winningNumberCount));
+                collectedCards.addAll(copyCards);
+        }
+
+        memoisation.put(startingIndex -1, collectedCards);
+
         return collectedCards;
     }
 
