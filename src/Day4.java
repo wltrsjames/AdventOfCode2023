@@ -3,6 +3,7 @@ import java.util.*;
 
 public class Day4 {
     private static Map<Integer, List<Integer[][]>> memoisation = new HashMap<>();
+
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
         String fileInput = FileUtils.readFile("src/resources/Day4-Input.txt");
@@ -46,20 +47,20 @@ public class Day4 {
 
     private static List<Integer[][]> getCopiesFromCard(List<Integer[][]> cards, Integer startingIndex, Integer endingIndex) {
         List<Integer[][]> collectedCards = new ArrayList<>();
-        if(memoisation.containsKey(startingIndex-1)) {
-            collectedCards.addAll(memoisation.get(startingIndex-1));
+        if (memoisation.containsKey(startingIndex - 1)) {
+            collectedCards.addAll(memoisation.get(startingIndex - 1));
             return collectedCards;
         }
 
         for (int i = startingIndex; i < endingIndex; i++) {
-                collectedCards.add(cards.get(i));
-                long winningNumberCount = getWinningNumberCount(cards.get(i));
+            collectedCards.add(cards.get(i));
+            long winningNumberCount = getWinningNumberCount(cards.get(i));
 
-                List<Integer[][]> copyCards = getCopiesFromCard(cards, i + 1, (int) (i + 1 + winningNumberCount));
-                collectedCards.addAll(copyCards);
+            List<Integer[][]> copyCards = getCopiesFromCard(cards, i + 1, (int) (i + 1 + winningNumberCount));
+            collectedCards.addAll(copyCards);
         }
 
-        memoisation.put(startingIndex -1, collectedCards);
+        memoisation.put(startingIndex - 1, collectedCards);
 
         return collectedCards;
     }
