@@ -31,6 +31,7 @@ public class Day7 {
         for (int i = 0; i < sortedCards.size(); i++) {
             Integer[][] cardNumbers = sortedCards.get(i);
             Integer cardBid = cards.get(cardNumbers);
+            System.out.println(cardBid);
 
             cardRankWinnings.add(cardBid * (i + 1));
         }
@@ -71,7 +72,7 @@ public class Day7 {
 
         // Finding the entry with max count
         Map.Entry<Integer, Long> maxEntry = countByNumber.entrySet().stream()
-                .sorted((entry1, entry2) -> Integer.compare(entry2.getKey(), entry1.getKey()))
+                .filter(entry -> entry.getKey() != 1)
                 .max(Map.Entry.comparingByValue())
                 .orElse(null);
 
