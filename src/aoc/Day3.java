@@ -1,3 +1,5 @@
+package aoc;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +8,7 @@ import java.util.List;
 
 public class Day3 {
     public static void main(String[] args) throws IOException {
-        String fileInput = FileUtils.readFile("src/resources/Day3-Input.txt");
+        String fileInput = FileUtils.readFile("src/resources/aoc.Day3-Input.txt");
         List<String> inputLine = Arrays.stream(fileInput.split("\r\n")).toList();
         String[][] inputCharacters = inputLine.stream().map(line -> line.split("")).toArray(String[][]::new);
 

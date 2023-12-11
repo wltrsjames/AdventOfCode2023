@@ -1,3 +1,5 @@
+package aoc;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,7 +9,7 @@ import java.util.Map;
 public class Day2 {
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
-        String fileInput = FileUtils.readFile("src/resources/Day2-Input.txt");
+        String fileInput = FileUtils.readFile("src/resources/aoc.Day2-Input.txt");
 
         List<String> games = Arrays.stream(fileInput.split("\r\n")).toList();
 

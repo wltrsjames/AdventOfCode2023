@@ -1,12 +1,12 @@
+package aoc;
+
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Day8 {
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
-        String fileInput = FileUtils.readFile("src/resources/Day8-Input.txt");
-
+        String fileInput = FileUtils.readFile("src/resources/aoc.Day8-Input.txt");
 
         String[] rightLeftValues = fileInput.split("\r\n\r\n")[0].split("");
         String[] directions = fileInput.split("\r\n\r\n")[1].split("\r\n");

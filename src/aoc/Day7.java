@@ -1,3 +1,5 @@
+package aoc;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -5,7 +7,7 @@ import java.util.stream.Collectors;
 public class Day7 {
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
-        String fileInput = FileUtils.readFile("src/resources/Day7-Input.txt");
+        String fileInput = FileUtils.readFile("src/resources/aoc.Day7-Input.txt");
 
         String[] lines = fileInput.split("\n");
 

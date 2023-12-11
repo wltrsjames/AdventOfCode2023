@@ -1,3 +1,5 @@
+package aoc;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -6,7 +8,7 @@ public class Day4 {
 
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
-        String fileInput = FileUtils.readFile("src/resources/Day4-Input.txt");
+        String fileInput = FileUtils.readFile("src/resources/aoc.Day4-Input.txt");
         List<String> inputLines = Arrays.stream(fileInput.split("\r\n")).toList();
         List<String> inputsWithoutGame = inputLines.stream().map(inputLine -> inputLine.substring(inputLine.indexOf(": ") + 2)).toList();
 

@@ -1,3 +1,5 @@
+package aoc;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +8,7 @@ import java.util.List;
 public class Day1 {
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
-        String fileInput = FileUtils.readFile("src/resources/Day1-1Input.txt");
+        String fileInput = FileUtils.readFile("src/resources/aoc.Day1-1Input.txt");
         List<String> inputItems = Arrays.stream(fileInput.split("\r\n")).toList();
 
         List<Integer> codes = inputItems.stream().map(inputItem -> {

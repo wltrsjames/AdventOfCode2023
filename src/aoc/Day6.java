@@ -1,12 +1,13 @@
+package aoc;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Day6 {
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
-        String fileInput = FileUtils.readFile("src/resources/Day6-Input.txt");
+        String fileInput = FileUtils.readFile("src/resources/aoc.Day6-Input.txt");
 
         String[] lines = fileInput.split("\n");
         Long[] times = Arrays.stream(lines[0].replace("Time:", "").trim().split("\\s+")).map(Long::parseLong).toArray(Long[]::new);
