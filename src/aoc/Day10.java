@@ -12,10 +12,13 @@ public class Day10 {
         String fileInput = FileUtils.readFile("src/resources/Day10-Input.txt");
         List<String> inputLine = Arrays.stream(fileInput.split("\r\n")).toList();
         Character[][] inputCharacters = inputLine.stream().map(line -> Arrays.stream(line.split("")).map(letter -> letter.charAt(0)).toArray(Character[]::new)).toArray(Character[][]::new);
+        Character[][] inputMask = deepCopy(inputCharacters);
 
         Integer[] startingLocation = getStartingCharacter(inputCharacters);
         int startY = startingLocation[0];
         int startX = startingLocation[1];
+        inputCharacters[startY][startX] = 'L';
+        inputMask[startY][startX] = 'X';
 
         List<CurrentLocation> pathLocations = scanAroundSymbol(inputCharacters, startY, startX);
 
@@ -26,7 +29,7 @@ public class Day10 {
             for (int i = 0; i < pathLocations.size(); i++) {
                 CurrentLocation currentLocation = pathLocations.get(i);
                 char currentLetter = inputCharacters[currentLocation.currentY][currentLocation.currentX];
-                inputCharacters[currentLocation.currentY][currentLocation.currentX] = 'X';
+                inputMask[currentLocation.currentY][currentLocation.currentX] = 'X';
                 CurrentLocation newLocation = changeDirection(currentLetter, currentLocation);
                 pathLocations.add(i, newLocation);
                 pathLocations.remove(currentLocation);
@@ -38,17 +41,98 @@ public class Day10 {
             int allCurrentX = pathLocations.stream().map(pathLocation -> pathLocation.currentX).reduce((location1, location2) -> location1 - location2).get();
 
             if (allCurrentY == 0 && allCurrentX == 0) {
+                inputMask[pathLocations.get(0).currentY][pathLocations.get(0).currentX] = 'X';
                 isSearching = false;
             }
         }
 
-        for (Character[] line : inputCharacters) {
+        int insideCount = 0;
+
+        for (int i = 0; i < inputCharacters.length; i++) {
+            for (int j = 0; j < inputCharacters[i].length; j++) {
+                if (inputMask[i][j] == 'X') {
+                    continue;
+                }
+
+                if (isInLoop(inputCharacters, inputMask, i, j)) {
+                    inputMask[i][j] = '-';
+                    insideCount++;
+                } else {
+                    inputMask[i][j] = ' ';
+                }
+            }
+        }
+
+        for (Character[] line : inputMask) {
             String values = Arrays.stream(line).map(String::valueOf).collect(Collectors.joining());
 
             System.out.println(values);
         }
 
-        System.out.println(stepsUntilIntersect);
+        System.out.println(insideCount);
+    }
+
+    private static boolean isInLoop(Character[][] inputChars, Character[][] inputMask, int y, int x) {
+        double lineHits = 0.0;
+        char lastCharacter = '0';
+        for (int i = x; i < inputChars[y].length; i++) {
+            if (inputMask[y][i] == 'X') {
+                char actualCharacter = inputChars[y][i];
+                if (actualCharacter == '-') {
+                    continue;
+                } else if (actualCharacter == '|') {
+                    lineHits += 1.0;
+                } else if (lastCharacter == '0' && actualCharacter == 'F') {
+                    lastCharacter = 'F';
+                    lineHits += 0.5;
+                } else if (lastCharacter == 'F' && actualCharacter == '7') {
+                    lastCharacter = '0';
+                    lineHits += 1.5;
+                } else if (lastCharacter == 'F' && actualCharacter == 'J') {
+                    lastCharacter = '0';
+                    lineHits += 0.5;
+                } else if (lastCharacter == '0' && actualCharacter == 'L') {
+                    lastCharacter = 'L';
+                    lineHits += 0.5;
+                } else if (lastCharacter == 'L' && actualCharacter == 'J') {
+                    lastCharacter = '0';
+                    lineHits += 1.5;
+                } else if (lastCharacter == 'L' && actualCharacter == '7') {
+                    lastCharacter = '0';
+                    lineHits += 0.5;
+                }
+
+            }
+        }
+
+        int intersectCount = (int) lineHits;
+
+        if ((intersectCount % 2) == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static Character[][] deepCopy(Character[][] original) {
+        if (original == null) {
+            return null;
+        }
+
+        int rows = original.length;
+        int columns = original[0].length;
+
+        // Create a new array with the same dimensions
+        Character[][] copy = new Character[rows][columns];
+
+        // Copy the values from the original array to the new array
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                copy[i][j] = original[i][j];
+            }
+        }
+
+        return copy;
     }
 
     private static CurrentLocation changeDirection(char letter, CurrentLocation currentLocation) {
