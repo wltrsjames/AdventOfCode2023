@@ -17,7 +17,7 @@ A
 src/aoc/Day3.java,d\7\d7d016ed1ddd157b3a5d6c62de9ed87da6f43fd7
 L
 src/resources/Day3-input.txt,a\4\a46e898811a3d67da71a4f91814122bff9263393
-M
-src/resources/Day10-Input.txt,5\a\5a4c7e382346c53939e03ed4de8921cb6e6a0527
 B
 src/aoc/Day10.java,0\5\057508eb82bc6c1e4eea36b9214b968c8c6d6184
+M
+src/resources/Day10-Input.txt,5\a\5a4c7e382346c53939e03ed4de8921cb6e6a0527

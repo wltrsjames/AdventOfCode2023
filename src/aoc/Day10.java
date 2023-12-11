@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Day10 {
     public static void main(String[] args) throws IOException {
@@ -16,75 +17,113 @@ public class Day10 {
         int startY = startingLocation[0];
         int startX = startingLocation[1];
 
-        List<Integer[]> pathLocations = scanAroundSymbol(inputCharacters, startY, startX);
+        List<CurrentLocation> pathLocations = scanAroundSymbol(inputCharacters, startY, startX);
 
-        Integer[] path1 = pathLocations.get(0);
-        char currentLetter = inputCharacters[path1[0]][path1[1]];
+        boolean isSearching = true;
+        int stepsUntilIntersect = 1;
 
-        Integer[] newLocation = changeDirection(currentLetter, startY, startX, path1[0], path1[1]);
+        while (isSearching) {
+            for (int i = 0; i < pathLocations.size(); i++) {
+                CurrentLocation currentLocation = pathLocations.get(i);
+                char currentLetter = inputCharacters[currentLocation.currentY][currentLocation.currentX];
+                inputCharacters[currentLocation.currentY][currentLocation.currentX] = 'X';
+                CurrentLocation newLocation = changeDirection(currentLetter, currentLocation);
+                pathLocations.add(i, newLocation);
+                pathLocations.remove(currentLocation);
+            }
 
+            stepsUntilIntersect++;
 
-//        for (Integer[] path : pathLocations) {
-//
-//        }
+            int allCurrentY = pathLocations.stream().map(pathLocation -> pathLocation.currentY).reduce((location1, location2) -> location1 - location2).get();
+            int allCurrentX = pathLocations.stream().map(pathLocation -> pathLocation.currentX).reduce((location1, location2) -> location1 - location2).get();
 
+            if (allCurrentY == 0 && allCurrentX == 0) {
+                isSearching = false;
+            }
+        }
 
+        for (Character[] line : inputCharacters) {
+            String values = Arrays.stream(line).map(String::valueOf).collect(Collectors.joining());
+
+            System.out.println(values);
+        }
+
+        System.out.println(stepsUntilIntersect);
     }
 
-    private static Integer[] changeDirection(char letter, int currentY, int currentX, int nextY, int nextX) {
-        if (letter == '|' && currentY - nextY == 1) {
-            return new Integer[]{nextY - 1, nextX};
+    private static CurrentLocation changeDirection(char letter, CurrentLocation currentLocation) {
+        if (letter == '|') {
+            if (currentLocation.direction.equals(Direction.DOWN)) {
+                return new CurrentLocation(currentLocation.currentY + 1, currentLocation.currentX, Direction.DOWN);
+            }
+            if (currentLocation.direction.equals(Direction.UP)) {
+                return new CurrentLocation(currentLocation.currentY - 1, currentLocation.currentX, Direction.UP);
+            }
         }
-
-        if (letter == '|' && currentY - nextY == -1) {
-            return new Integer[]{nextY + 1, nextX};
+        if (letter == '-') {
+            if (currentLocation.direction.equals(Direction.RIGHT)) {
+                return new CurrentLocation(currentLocation.currentY, currentLocation.currentX + 1, Direction.RIGHT);
+            }
+            if (currentLocation.direction.equals(Direction.LEFT)) {
+                return new CurrentLocation(currentLocation.currentY, currentLocation.currentX - 1, Direction.LEFT);
+            }
         }
-
-        if (letter == '-' && currentX - nextX == 1) {
-            return new Integer[]{nextY - 1, nextX};
+        if (letter == 'F') {
+            if (currentLocation.direction.equals(Direction.LEFT)) {
+                return new CurrentLocation(currentLocation.currentY + 1, currentLocation.currentX, Direction.DOWN);
+            }
+            if (currentLocation.direction.equals(Direction.UP)) {
+                return new CurrentLocation(currentLocation.currentY, currentLocation.currentX + 1, Direction.RIGHT);
+            }
         }
-
-        if (letter == '-' && currentX - nextX == -1) {
-            return new Integer[]{nextY + 1, nextX};
+        if (letter == '7') {
+            if (currentLocation.direction.equals(Direction.RIGHT)) {
+                return new CurrentLocation(currentLocation.currentY + 1, currentLocation.currentX, Direction.DOWN);
+            }
+            if (currentLocation.direction.equals(Direction.UP)) {
+                return new CurrentLocation(currentLocation.currentY, currentLocation.currentX - 1, Direction.LEFT);
+            }
         }
-
-        if (letter == 'F' && currentX - nextX == 1) {
-            return new Integer[]{nextY + 1, nextX};
+        if (letter == 'L') {
+            if (currentLocation.direction.equals(Direction.LEFT)) {
+                return new CurrentLocation(currentLocation.currentY - 1, currentLocation.currentX, Direction.UP);
+            }
+            if (currentLocation.direction.equals(Direction.DOWN)) {
+                return new CurrentLocation(currentLocation.currentY, currentLocation.currentX + 1, Direction.RIGHT);
+            }
         }
-        if (letter == 'F' && currentX - nextX == 0) {
-            return new Integer[]{nextY, nextX + 1};
-        }
-
-        if (letter == '7' && currentX - nextX == -1) {
-            return new Integer[]{nextY + 1, nextX};
-        }
-        if (letter == '7' && currentX - nextX == 0) {
-            return new Integer[]{nextY, nextX + 1};
+        if (letter == 'J') {
+            if (currentLocation.direction.equals(Direction.RIGHT)) {
+                return new CurrentLocation(currentLocation.currentY - 1, currentLocation.currentX, Direction.UP);
+            }
+            if (currentLocation.direction.equals(Direction.DOWN)) {
+                return new CurrentLocation(currentLocation.currentY, currentLocation.currentX - 1, Direction.LEFT);
+            }
         }
 
         return null;
     }
 
-    private static List<Integer[]> scanAroundSymbol(Character[][] inputCharacters, int y, int x) {
+    private static List<CurrentLocation> scanAroundSymbol(Character[][] inputCharacters, int y, int x) {
         char top = inputCharacters[y - 1][x];
         char left = inputCharacters[y][x - 1];
         char right = inputCharacters[y][x + 1];
         char bottom = inputCharacters[y + 1][x];
 
-        List<Integer[]> validPaths = new ArrayList<>();
+        List<CurrentLocation> validPaths = new ArrayList<>();
 
         if (top == '7' || top == 'F' || top == '|') {
-            validPaths.add(new Integer[]{y - 1, x});
+            validPaths.add(new CurrentLocation(y - 1, x, Direction.UP));
         }
         if (bottom == 'L' || bottom == 'J' || bottom == '|') {
-            validPaths.add(new Integer[]{y + 1, x});
+            validPaths.add(new CurrentLocation(y + 1, x, Direction.DOWN));
         }
 
         if (left == 'L' || left == 'F' || left == '-') {
-            validPaths.add(new Integer[]{y, x - 1});
+            validPaths.add(new CurrentLocation(y, x - 1, Direction.LEFT));
         }
         if (right == '7' || right == 'J' || right == '-') {
-            validPaths.add(new Integer[]{y, x + 1});
+            validPaths.add(new CurrentLocation(y, x + 1, Direction.RIGHT));
         }
 
         return validPaths;
@@ -104,5 +143,15 @@ public class Day10 {
             }
         }
         return coordinates.toArray(Integer[]::new);
+    }
+
+    private enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
+
+    private record CurrentLocation(int currentY, int currentX, Direction direction) {
     }
 }
