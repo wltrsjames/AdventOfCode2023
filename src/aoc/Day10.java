@@ -55,10 +55,10 @@ public class Day10 {
                 }
 
                 if (isInLoop(inputCharacters, inputMask, i, j)) {
-                    inputMask[i][j] = '-';
+                    inputMask[i][j] = 'I';
                     insideCount++;
                 } else {
-                    inputMask[i][j] = ' ';
+                    inputMask[i][j] = '0';
                 }
             }
         }
@@ -107,11 +107,7 @@ public class Day10 {
 
         int intersectCount = (int) lineHits;
 
-        if ((intersectCount % 2) == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return (intersectCount % 2) != 0;
     }
 
     public static Character[][] deepCopy(Character[][] original) {
